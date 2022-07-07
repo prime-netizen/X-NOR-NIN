@@ -58,8 +58,6 @@ $ python main.py --resume alexnet.baseline.pth.tar --evaluate # add "--caffe-dat
 ```
 The training log can be found here: [log - Caffe dataset](https://raw.githubusercontent.com/jiecaoyu/XNOR-Net-PyTorch/master/ImageNet/networks/log.baseline); [log - torchvision](https://github.com/jiecaoyu/XNOR-Net-PyTorch/blob/master/ImageNet/networks/log.pytorch.wd_3e-6).
 
-## Todo
-- NIN for ImageNet.
 
 ## Notes
 ### Gradients of scaled sign function
