@@ -1,6 +1,6 @@
 import os
 import torch
-import cPickle as pickle
+import pickle as pickle
 import numpy
 import torchvision.transforms as transforms
 
@@ -12,15 +12,15 @@ class dataset():
         if self.train:
             train_data_path = os.path.join(root, 'train_data')
             train_labels_path = os.path.join(root, 'train_labels')
-            self.train_data = numpy.load(open(train_data_path, 'r'))
+            self.train_data = numpy.load(train_data_path)
             self.train_data = torch.from_numpy(self.train_data.astype('float32'))
-            self.train_labels = numpy.load(open(train_labels_path, 'r')).astype('int')
+            self.train_labels = numpy.load(train_labels_path).astype('int')
         else:
             test_data_path = os.path.join(root, 'test_data')
             test_labels_path = os.path.join(root, 'test_labels')
-            self.test_data = numpy.load(open(test_data_path, 'r'))
+            self.test_data = numpy.load(test_data_path)
             self.test_data = torch.from_numpy(self.test_data.astype('float32'))
-            self.test_labels = numpy.load(open(test_labels_path, 'r')).astype('int')
+            self.test_labels = numpy.load(test_labels_path).astype('int')
 
     def __len__(self):
         if self.train:
