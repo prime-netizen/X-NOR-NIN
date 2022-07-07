@@ -126,7 +126,7 @@ if __name__=='__main__':
         raise Exception\
                 ('Please assign the correct data path with --data <DATA_PATH>')
         
-        to_tensor_transformer = transforms.Compose([
+    to_tensor_transformer = transforms.Compose([
         transforms.ToTensor(),
         ])
     trainset = torchvision.datasets.CIFAR10(args.data, train=True, download=True, transform=to_tensor_transformer)
