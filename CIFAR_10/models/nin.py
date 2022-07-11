@@ -79,3 +79,66 @@ class Net(nn.Module):
         x = self.xnor(x)
         x = x.view(x.size(0), 10)
         return x
+
+    
+def save_variable(x,bn_weights,bn_bias,conv_weights,conv_bias,output,row):
+    """
+    Inputs
+    """
+    inputs = x.detach().cpu().numpy()
+    file = open('inputs.txt','a')    
+    for i in inputs:
+        for j in i:           
+            np.savetxt(file,j) 
+    file.close()
+
+
+    """
+    Batch Normalization Weights
+    """
+    bn_weights = bn_weights.detach().cpu().numpy()
+    file = open('bn_weights.txt','a')    
+    np.savetxt(file,bn_weights)
+    file.close()
+
+    
+    """
+    Batch Normalization Bias
+    """
+
+    bn_bias = bn_bias.detach().cpu().numpy()
+    file = open('bn_bias.txt','a')    
+    np.savetxt(file,bn_bias)
+    file.close()
+
+    
+    """
+    Convolution Weights
+    """  
+    conv_weights = conv_weights.detach().cpu().numpy()
+    file = open('conv_weights.txt','a')    
+    for i in conv_weights:
+        for j in i:           
+            np.savetxt(file,j)  
+    file.close()
+    
+
+    
+    """
+    Convolution Bias
+    """
+    conv_bias = conv_bias.detach().cpu().numpy()
+    file = open('conv_bias.txt','a')
+    np.savetxt(file,conv_bias)
+    file.close()
+    
+
+    """
+    Output Activation
+    """
+    output = output.detach().cpu().numpy()
+    file = open('pre-activation_outputs.txt','a')    
+    for i in output:
+        for j in i:          
+            np.savetxt(file,j)
+    file.close()
