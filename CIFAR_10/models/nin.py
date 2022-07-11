@@ -22,13 +22,14 @@ class BinActive(torch.autograd.Function):
 
 class BinConv2d(nn.Module):
     def __init__(self, input_channels, output_channels,
-            kernel_size=-1, stride=-1, padding=-1, dropout=0):
+            kernel_size=-1, stride=-1, padding=-1, dropout=0, save_info=0):
         super(BinConv2d, self).__init__()
         self.layer_type = 'BinConv2d'
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
         self.dropout_ratio = dropout
+        self.save_info= save_info
 
         self.bn = nn.BatchNorm2d(input_channels, eps=1e-4, momentum=0.1, affine=True)
         self.bn.weight.data = self.bn.weight.data.zero_().add(1.0)
