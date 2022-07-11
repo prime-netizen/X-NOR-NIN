@@ -39,11 +39,15 @@ class BinConv2d(nn.Module):
         self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
+        x_value = x.clone()
         x = self.bn(x)
         x, mean = BinActive.apply(x)
         if self.dropout_ratio!=0:
             x = self.dropout(x)
         x = self.conv(x)
+        x = BinOp.binarization(x)
+        if self.save_info:
+            save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x , self.rows)
         x = self.relu(x)
         return x
 
