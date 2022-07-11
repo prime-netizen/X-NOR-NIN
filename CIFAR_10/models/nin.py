@@ -46,8 +46,8 @@ class BinConv2d(nn.Module):
             x = self.dropout(x)
         x = self.conv(x)
         #x = BinOp.binarization(x)
-        #if self.save_info:
-            #save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x , self.rows)
+        if self.save_info:
+            save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x , self.rows)
         x = self.relu(x)
         return x
 
