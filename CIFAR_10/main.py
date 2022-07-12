@@ -147,7 +147,7 @@ if __name__=='__main__':
     # define the model
     print('==> building model',args.arch,'...')
     if args.arch == 'nin':
-        model = nin.Net()
+        model = nin.NIN_train()
     else:
         raise Exception(args.arch+' is currently not supported')
 
