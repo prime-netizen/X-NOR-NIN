@@ -88,6 +88,11 @@ def test():
         test_loss * 128., correct, len(testloader.dataset),
         100. * float(correct) / len(testloader.dataset)))
     print('Best Accuracy: {:.2f}%\n'.format(best_acc))
+    
+    bin_op.binarization()
+    for key,value in model.named_parameters():
+      print(key,value)
+    
     return
 
 def adjust_learning_rate(optimizer, epoch):
