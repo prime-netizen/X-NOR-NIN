@@ -92,6 +92,13 @@ def test():
     bin_op.binarization()
     for key,value in model.named_parameters():
       print(key,value)
+      with open('Weights.txt', 'a') as f:
+        f.write(str(key))
+        f.write('\n')
+        f.write('\n')
+        f.write(str(value))
+        f.write('\n')
+        f.write('\n')
     
     return
 
