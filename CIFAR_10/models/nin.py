@@ -48,7 +48,7 @@ class BinConv2d(nn.Module):
         x = self.conv(x)
         #x = BinOp.binarization(x)
         if self.save_info:
-            save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x , self.rows)
+            save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x )
         x = self.relu(x)
         return x
 
@@ -120,7 +120,7 @@ class NIN_test(nn.Module):
         return x
 
     
-def save_variable(x,bn_weights,bn_bias,conv_weights,conv_bias,output,row):
+def save_variable(x,bn_weights,bn_bias,conv_weights,conv_bias,output):
     """
     Inputs
     """
