@@ -149,6 +149,8 @@ if __name__=='__main__':
 
     #testset = data.dataset(root=args.data, train=False)
     testset = torchvision.datasets.CIFAR10(args.data, train=False, download=True, transform=to_tensor_transformer)
+    x=[1]
+    testset = torch.utils.data.Subset(testset,x)
     testloader = torch.utils.data.DataLoader(testset, batch_size=100,
             shuffle=False, num_workers=2)
 
