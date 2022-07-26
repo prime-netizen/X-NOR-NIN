@@ -1,3 +1,5 @@
+#Architecture NIN. Modifications: Relu,bias units removed from bin conv layers, 
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
