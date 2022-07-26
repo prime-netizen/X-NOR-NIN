@@ -214,13 +214,13 @@ if __name__=='__main__':
     # Genration of alphas of Batch Normalization
     bn_old_list=[]
     for name,m in model_old.named_modules():
-      if isinstance(m,nin_norelu.BinConv2d):
+      if isinstance(m,nin.BinConv2d):
         bn_params=m.bn.running_mean-(((m.bn.running_var**0.5)*m.bn.bias)/m.bn.weight)
         bn_old_list.append(bn_params)
 
     i=0
     for name,m in model.named_modules():
-      if isinstance(m,nin_norelu.BinConv2d):
+      if isinstance(m,nin.BinConv2d):
         m.bn_params=bn_old_list[i]
         print('-' *30)
         print('Alpha starts at Bin_conv layer {}'.format(i+1))
@@ -233,7 +233,7 @@ if __name__=='__main__':
           f.write('\n')
           f.write('The alpha values are:')
           f.write('\n')
-          alp=m.bn_params.detach().numpy()
+          alp=m.bn_params.cpu().detach().numpy()
           f.write(str(alp))
           f.write('\n')
           f.write('\n')
