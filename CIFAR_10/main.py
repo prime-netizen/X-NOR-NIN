@@ -12,6 +12,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 from torchvision import transforms
+import math
+from torchsummary import summary
 
 from models import nin
 from torch.autograd import Variable
@@ -162,6 +164,7 @@ if __name__=='__main__':
     print('==> building model',args.arch,'...')
     if args.arch == 'nin':
         model = nin.NIN_train()
+        model_old=nin.NIN_train()
     else:
         raise Exception(args.arch+' is currently not supported')
 
@@ -177,11 +180,16 @@ if __name__=='__main__':
         print('==> Load pretrained model form', args.pretrained, '...')
         pretrained_model = torch.load(args.pretrained)
         best_acc = pretrained_model['best_acc']
+        model_old.load_state_dict(pretrained_model['state_dict'])
         model.load_state_dict(pretrained_model['state_dict'])
+        print('Last Recorded Accuracy of pretrained model:')
+        print(best_acc)
+
 
     #if not args.cpu:
     if torch.cuda.is_available():
         model.cuda()
+        model_old.cuda()
         model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
     print(model)
 
@@ -199,6 +207,35 @@ if __name__=='__main__':
 
     # define the binarization operator
     bin_op = util.BinOp(model)
+    
+    # Modification for Batch Normalization
+    bn_old_list=[]
+    for name,m in model_old.named_modules():
+      if isinstance(m,nin.BinConv2d):
+        bn_params=m.bn.running_mean-(((m.bn.running_var**0.5)*m.bn.bias)/m.bn.weight)
+        bn_old_list.append(bn_params)
+
+    i=0
+    for name,m in model.named_modules():
+      if isinstance(m,nin.BinConv2d):
+        m.bn_params=bn_old_list[i]
+        print('-' *30)
+        print('Alpha starts at Bin_conv layer {}'.format(i+1))
+        print('Alpha vector dimension:',m.bn_params.size(0))
+        print('Max: {:.4f} | Min: {:.4f} | Mean: {:.4f} | Std: {:.4f}'.format(m.bn_params.max(),m.bn_params.min(),m.bn_params.mean(),m.bn_params.std()))
+        
+        with open('Alphas.txt', 'a') as f:
+          f.write('Alpha starts at Bin_conv layer :')
+          f.write(str(i+1))
+          f.write('\n')
+          f.write('The alpha values are:')
+          f.write('\n')
+          alp=m.bn_params.detach().numpy()
+          f.write(str(alp))
+          f.write('\n')
+          f.write('\n')
+
+        i+=1
 
     # do the evaluation if specified
     if args.evaluate:
