@@ -38,7 +38,7 @@ class BinConv2d(nn.Module):
             self.dropout = nn.Dropout(dropout)
         self.conv = nn.Conv2d(input_channels, output_channels,
                 kernel_size=kernel_size, stride=stride, padding=padding)
-        self.relu = nn.ReLU(inplace=True)
+        #self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
         x_value = x.clone()
@@ -50,7 +50,7 @@ class BinConv2d(nn.Module):
         #x = BinOp.binarization(x)
         if self.save_info:
             save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x )
-        x = self.relu(x)
+        #x = self.relu(x)
         return x
 
 class NIN_train(nn.Module):
@@ -60,6 +60,7 @@ class NIN_train(nn.Module):
                 nn.Conv2d(3, 192, kernel_size=5, stride=1, padding=2),
                 nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
                 nn.ReLU(inplace=True),
+            
                 BinConv2d(192, 160, kernel_size=1, stride=1, padding=0),
                 BinConv2d(160,  96, kernel_size=1, stride=1, padding=0),
                 nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
@@ -72,6 +73,7 @@ class NIN_train(nn.Module):
                 BinConv2d(192, 192, kernel_size=3, stride=1, padding=1, dropout=0.5),
                 BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
                 nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
+            
                 nn.Conv2d(192,  10, kernel_size=1, stride=1, padding=0),
                 nn.ReLU(inplace=True),
                 nn.AvgPool2d(kernel_size=8, stride=1, padding=0),
