@@ -15,7 +15,7 @@ from torchvision import transforms
 import math
 from torchsummary import summary
 
-from models import nin
+from models import nin,nin_norelu
 from torch.autograd import Variable
 
 def save_state(model, best_acc):
@@ -164,7 +164,10 @@ if __name__=='__main__':
     print('==> building model',args.arch,'...')
     if args.arch == 'nin':
         model = nin.NIN_train()
-        model_old=nin.NIN_train()
+        model_old = nin.NIN_train()
+    elif args.arch =='nin_norelu':
+        model = nin_norelu.NIN_train()
+        model_old = nin_norelu.NIN_train() 
     else:
         raise Exception(args.arch+' is currently not supported')
 
