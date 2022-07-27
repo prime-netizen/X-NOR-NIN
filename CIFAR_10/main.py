@@ -243,8 +243,8 @@ if __name__=='__main__':
     # do the evaluation if specified
     if args.evaluate:
         test()
-        bin_op.binarization()
-        print(bin_op.target_modules)
+        #bin_op.binarization()
+        #print(bin_op.target_modules)
         exit(0)
 
     # start training
