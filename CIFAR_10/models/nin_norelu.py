@@ -39,7 +39,7 @@ class BinConv2d(nn.Module):
             self.dropout = nn.Dropout(dropout)
         self.conv = nn.Conv2d(input_channels, output_channels,
                 kernel_size=kernel_size, stride=stride, padding=padding)
-        self.relu = nn.ReLU(inplace=True)
+        #self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
         x_value = x.clone()
@@ -51,7 +51,7 @@ class BinConv2d(nn.Module):
         #x = BinOp.binarization(x)
         if self.save_info:
             save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x )
-        x = self.relu(x)
+        #x = self.relu(x)
         return x
 
 class NIN_train(nn.Module):
