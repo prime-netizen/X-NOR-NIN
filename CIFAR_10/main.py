@@ -91,16 +91,18 @@ def test():
         100. * float(correct) / len(testloader.dataset)))
     print('Best Accuracy: {:.2f}%\n'.format(best_acc))
     
-    bin_op.binarization()
-    for key,value in model.named_parameters():
-      print(key,value)
-      with open('Weights.txt', 'a') as f:
-        f.write(str(key))
-        f.write('\n')
-        f.write('\n')
-        f.write(str(value))
-        f.write('\n')
-        f.write('\n')
+    
+    #Comment out during inference
+    #bin_op.binarization()
+    #for key,value in model.named_parameters():
+     # print(key,value)
+    #  with open('Weights.txt', 'a') as f:
+      #  f.write(str(key))
+       # f.write('\n')
+        #f.write('\n')
+        #f.write(str(value))
+       # f.write('\n')
+       # f.write('\n')
     
     return
 
@@ -151,8 +153,10 @@ if __name__=='__main__':
 
     #testset = data.dataset(root=args.data, train=False)
     testset = torchvision.datasets.CIFAR10(args.data, train=False, download=True, transform=to_tensor_transformer)
-    x=[1]
-    testset = torch.utils.data.Subset(testset,x)
+    
+    #Comment out to infer for one image only
+    #x=[1]
+    #testset = torch.utils.data.Subset(testset,x)
     testloader = torch.utils.data.DataLoader(testset, batch_size=100,
             shuffle=False, num_workers=2)
 
