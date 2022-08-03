@@ -151,10 +151,10 @@ if __name__=='__main__':
 
     #testset = data.dataset(root=args.data, train=False)
     testset = torchvision.datasets.CIFAR10(args.data, train=False, download=True, transform=to_tensor_transformer)
-    x=[1]
+    x=range(1,11)
     testset = torch.utils.data.Subset(testset,x)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=100,
-            shuffle=False, num_workers=2)
+    testloader = torch.utils.data.DataLoader(testset, batch_size=1,
+            shuffle=True, num_workers=2)
 
     # define classes
     classes = ('plane', 'car', 'bird', 'cat',
