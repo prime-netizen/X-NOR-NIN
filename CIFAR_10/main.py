@@ -9,6 +9,7 @@ import torch
 import argparse
 import data
 import util
+import util_BN
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
@@ -29,7 +30,7 @@ def save_state(model, best_acc):
         if 'module' in key:
             state['state_dict'][key.replace('module.', '')] = \
                     state['state_dict'].pop(key)
-    torch.save(state, 'models/nin.pth.tar')
+    torch.save(state, 'models/nin_norelu.pth.tar')
 
 def train(epoch):
     model.train()
@@ -143,14 +144,16 @@ if __name__=='__main__':
         raise Exception\
                 ('Please assign the correct data path with --data <DATA_PATH>')
         
+    kwargs={'pin_memory':True} if args.cuda else {}
     to_tensor_transformer = transforms.Compose([
         transforms.ToTensor(),
+        transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
         ])
     trainset = torchvision.datasets.CIFAR10(args.data, train=True, download=True, transform=to_tensor_transformer)
 
     #trainset = data.dataset(root=args.data, train=True)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=128,
-            shuffle=True, num_workers=2)
+            shuffle=True, num_workers=2, **kwargs)
 
     #testset = data.dataset(root=args.data, train=False)
     testset = torchvision.datasets.CIFAR10(args.data, train=False, download=True, transform=to_tensor_transformer)
@@ -159,7 +162,7 @@ if __name__=='__main__':
     #x=[1]
     #testset = torch.utils.data.Subset(testset,x)
     testloader = torch.utils.data.DataLoader(testset, batch_size=100,
-            shuffle=False, num_workers=2)
+            shuffle=False, num_workers=2, **kwargs)
 
     # define classes
     classes = ('plane', 'car', 'bird', 'cat',
@@ -225,7 +228,7 @@ if __name__=='__main__':
 
     i=0
     for name,m in model.named_modules():
-      if isinstance(m,nin_norelu.BinConv2d):
+      if isinstance(m,nin_norelu.Bin_Conv2d):
         m.bn_params=bn_old_list[i]
         print('-' *30)
         print('Alpha starts at Bin_conv layer {}'.format(i+1))
