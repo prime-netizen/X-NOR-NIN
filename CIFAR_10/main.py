@@ -144,7 +144,7 @@ if __name__=='__main__':
         raise Exception\
                 ('Please assign the correct data path with --data <DATA_PATH>')
         
-    kwargs={'pin_memory':True} if args.cuda else {}
+    kwargs={'pin_memory':True} if torch.cuda.is_available() else {}
     to_tensor_transformer = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
