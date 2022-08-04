@@ -74,7 +74,6 @@ class Net(nn.Module):
                 BinConv2d(192, 192, kernel_size=3, stride=1, padding=1, dropout=0.5),
                 BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
             
-                nn.ReLU(inplace=True),
                 nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
             
                 nn.Conv2d(192,  10, kernel_size=1, stride=1, padding=0),
@@ -115,14 +114,14 @@ class Bin_Conv2d(nn.Module):
     
     def forward(self, x):
         x_value = x.clone()
-        #x = self.bn(x)
+        x = self.bn(x)
         ## Compact Batch Normalization
-        x_bn=torch.zeros_like(x)
-        if torch.cuda.is_available():
-            x_bn=x_bn.cuda()
-        for i in range(self.bn_params.size(0)):
-            x_bn[:,i,:,:]=self.bn_params[i]
-        x=x-x_bn
+       # x_bn=torch.zeros_like(x)
+       # if torch.cuda.is_available():
+         #   x_bn=x_bn.cuda()
+        #for i in range(self.bn_params.size(0)):
+         #   x_bn[:,i,:,:]=self.bn_params[i]
+        #x=x-x_bn
         
         x, mean = BinActive.apply(x)
         if self.dropout_ratio!=0:
@@ -130,15 +129,15 @@ class Bin_Conv2d(nn.Module):
         x = self.conv(x)
         
         ## Add variations
-        var_x=torch.ones_like(x)
-        if torch.cuda.is_available():
-            var_x=var_x.cuda()
-        for i in range(self.dist_margin.size(0)):
-            if torch.cuda.is_available():
-                var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i].cuda()
-            else:
+        #var_x=torch.ones_like(x)
+        #if torch.cuda.is_available():
+        #    var_x=var_x.cuda()
+       # for i in range(self.dist_margin.size(0)):
+          #  if torch.cuda.is_available():
+             #   var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i].cuda()
+           # else:
                 var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i]
-        x=x+var_x
+       # x=x+var_x
                        
         #x = BinOp.binarization(x)
         if self.save_info:
@@ -166,8 +165,7 @@ class Net_BN(nn.Module):
 
                 Bin_Conv2d(192, 192, kernel_size=3, stride=1, padding=1, dropout=0.5),
                 Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
-            
-                nn.ReLU(inplace=True),
+           
                 nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
             
                 nn.Conv2d(192,  10, kernel_size=1, stride=1, padding=0),
