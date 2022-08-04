@@ -171,8 +171,8 @@ if __name__=='__main__':
         model = nin.NIN_train()
         model_old = nin.NIN_train()
     elif args.arch =='nin_norelu':
-        model = nin_norelu.NIN_train()
-        model_old = nin_norelu.NIN_train() 
+        model = nin_norelu.Net_BN()
+        model_old = nin_norelu.Net() 
     else:
         raise Exception(args.arch+' is currently not supported')
 
@@ -214,18 +214,18 @@ if __name__=='__main__':
     criterion = nn.CrossEntropyLoss()
 
     # define the binarization operator
-    bin_op = util.BinOp(model)
+    bin_op = util_BN.BinOp(model)
     
     # Genration of alphas of Batch Normalization
     bn_old_list=[]
     for name,m in model_old.named_modules():
-      if isinstance(m,nin.BinConv2d):
+      if isinstance(m,nin_norelu.BinConv2d):
         bn_params=m.bn.running_mean-(((m.bn.running_var**0.5)*m.bn.bias)/m.bn.weight)
         bn_old_list.append(bn_params)
 
     i=0
     for name,m in model.named_modules():
-      if isinstance(m,nin.BinConv2d):
+      if isinstance(m,nin_norelu.BinConv2d):
         m.bn_params=bn_old_list[i]
         print('-' *30)
         print('Alpha starts at Bin_conv layer {}'.format(i+1))
