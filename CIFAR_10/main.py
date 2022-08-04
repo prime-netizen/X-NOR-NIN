@@ -1,3 +1,4 @@
+# For training. Features: no relu,no scaling, no bias 
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
