@@ -118,7 +118,7 @@ class Bin_Conv2d(nn.Module):
         #x = self.bn(x)
         ## Compact Batch Normalization
         x_bn=torch.zeros_like(x)
-        if torch.cuda().is_available():
+        if torch.cuda.is_available():
             x_bn=x_bn.cuda()
         for i in range(self.bn_params.size(0)):
             x_bn[:,i,:,:]=self.bn_params[i]
@@ -131,10 +131,10 @@ class Bin_Conv2d(nn.Module):
         
         ## Add variations
         var_x=torch.ones_like(x)
-        if torch.cuda().is_available():
+        if torch.cuda.is_available():
             var_x=var_x.cuda()
         for i in range(self.dist_margin.size(0)):
-            if torch.cuda().is_available():
+            if torch.cuda.is_available():
                 var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i].cuda()
             else:
                 var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i]
