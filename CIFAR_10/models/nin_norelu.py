@@ -136,7 +136,7 @@ class Bin_Conv2d(nn.Module):
           #  if torch.cuda.is_available():
              #   var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i].cuda()
            # else:
-                var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i]
+              #  var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i]
        # x=x+var_x
                        
         #x = BinOp.binarization(x)
