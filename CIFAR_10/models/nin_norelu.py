@@ -13,6 +13,18 @@ class BinActive(torch.autograd.Function):
         size = input.size()
         mean = torch.mean(input.abs(), 1, keepdim=True)
         input = input.sign()
+        
+        """
+        Saving the binarized weights
+        """
+        bin_input=input.detach().cpu().numpy()
+        file=open('Binarized Inputs.txt','a')
+        for i in bin_input:
+            for j in i:
+                np.savetxt(file,j)
+        file.close()
+        
+        
         return input, mean
 
     def backward(self, grad_output, grad_output_mean):
