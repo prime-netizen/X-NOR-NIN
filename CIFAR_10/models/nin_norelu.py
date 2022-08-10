@@ -19,6 +19,9 @@ class BinActive(torch.autograd.Function):
         """
         bin_input=input.detach().cpu().numpy()
         file=open('Binarized Inputs.txt','a')
+        file.write('The Binarized Inputs for the layer are:')
+        file.write('/n')
+        file.write('/n')           
         for i in bin_input:
             for j in i:
                 np.savetxt(file,j)
