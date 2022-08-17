@@ -166,7 +166,7 @@ class Bin_Conv2d(nn.Module):
 class Bin_Maxpool2d(nn.Module):
     def __init__(self, input_channels,
             kernel_size=-1, stride=-1, padding=-1, dropout=0, save_info=0):
-        super(Bin_Conv2d, self).__init__()
+        super(Bin_Maxpool2d, self).__init__()
         self.layer_type = 'Bin_Maxpool2d'
         self.kernel_size = kernel_size
         self.stride = stride
