@@ -181,7 +181,7 @@ class Bin_Conv2d_Max(nn.Module):
             self.dropout = nn.Dropout(dropout)
         self.conv = nn.Conv2d(input_channels, output_channels,
                 kernel_size=kernel_size, stride=stride, padding=padding)
-        self.max = nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+        self.binmax = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         #self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
@@ -198,7 +198,7 @@ class Bin_Conv2d_Max(nn.Module):
         x, mean = BinActive.apply(x)
         if self.dropout_ratio!=0:
             x = self.dropout(x)
-        x = self.max(x)
+        x = self.binmax(x)
         x = self.conv(x)
         
         ## Add variations
@@ -207,9 +207,9 @@ class Bin_Conv2d_Max(nn.Module):
             var_x=var_x.cuda()
         for i in range(self.dist_margin.size(0)):
             if torch.cuda.is_available():
-             #   var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i].cuda()
+                var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i].cuda()
             else:
-              #  var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i]
+                var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i]
         x=x+var_x
                        
         #x = BinOp.binarization(x)
