@@ -1,4 +1,5 @@
 #Architecture NIN. Modifications: Relu,bias units removed from bin conv layers
+#Maxpooling inside BinConv2d layer 
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
