@@ -1,5 +1,5 @@
 #Architecture NIN. Modifications: Relu,bias units removed from bin conv layers
-#Custom Maxpooling layer
+#Replacing Maxpooling layer by Averagepooling layer
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
@@ -145,15 +145,15 @@ class Bin_Conv2d(nn.Module):
         x = self.conv(x)
         
         ## Add variations
-        #var_x=torch.ones_like(x)
-        #if torch.cuda.is_available():
-        #    var_x=var_x.cuda()
-       # for i in range(self.dist_margin.size(0)):
-          #  if torch.cuda.is_available():
-             #   var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i].cuda()
-           # else:
-              #  var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i]
-       # x=x+var_x
+        var_x=torch.ones_like(x)
+        if torch.cuda.is_available():
+            var_x=var_x.cuda()
+        for i in range(self.dist_margin.size(0)):
+            if torch.cuda.is_available():
+                var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i].cuda()
+            else:
+                var_x[:,i,:,:]=var_x[:,i,:,:]*self.dist_margin[i]
+        x=x+var_x
                        
         #x = BinOp.binarization(x)
         if self.save_info:
@@ -216,8 +216,8 @@ class Net_BN(nn.Module):
             
                 Bin_Conv2d(192, 160, kernel_size=1, stride=1, padding=0),
                 Bin_Conv2d(160,  96, kernel_size=1, stride=1, padding=0),
-                Bin_Maxpool2d(96,kernel_size=3, stride=2, padding=1),
-                #nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+                #Bin_Maxpool2d(96,kernel_size=3, stride=2, padding=1),
+                nn.AvgPool2d(kernel_size=3, stride=2, padding=1),
 
                 Bin_Conv2d( 96, 192, kernel_size=5, stride=1, padding=2, dropout=0.5),
                 Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
