@@ -1,5 +1,5 @@
 #Architecture NIN. Modifications: Relu,bias units removed from bin conv layers
-#Custom Maxpooling layer
+#Custom Averagepooling layer
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
@@ -163,10 +163,10 @@ class Bin_Conv2d(nn.Module):
     
     
     
-class Bin_Maxpool2d(nn.Module):
+class Bin_Avgpool2d(nn.Module):
     def __init__(self, input_channels,
             kernel_size=-1, stride=-1, padding=-1, dropout=0, save_info=0):
-        super(Bin_Maxpool2d, self).__init__()
+        super(Bin_Avgpool2d, self).__init__()
         self.layer_type = 'Bin_Maxpool2d'
         self.kernel_size = kernel_size
         self.stride = stride
@@ -180,7 +180,7 @@ class Bin_Maxpool2d(nn.Module):
         self.bn.weight.data = self.bn.weight.data.zero_().add(1.0)
         if dropout!=0:
             self.dropout = nn.Dropout(dropout)
-        self.max = nn.MaxPool2d(kernel_size=kernel_size, stride=stride, padding=padding)
+        self.avg = nn.AvgPool2d(kernel_size=kernel_size, stride=stride, padding=padding)
         #self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
@@ -197,7 +197,7 @@ class Bin_Maxpool2d(nn.Module):
         x, mean = BinActive.apply(x)
         if self.dropout_ratio!=0:
             x = self.dropout(x)
-        x = self.max(x)
+        x = self.avg(x)
         
         #x = BinOp.binarization(x)
         if self.save_info:
@@ -216,7 +216,7 @@ class Net_BN(nn.Module):
             
                 Bin_Conv2d(192, 160, kernel_size=1, stride=1, padding=0),
                 Bin_Conv2d(160,  96, kernel_size=1, stride=1, padding=0),
-                Bin_Maxpool2d(96,kernel_size=3, stride=2, padding=1),
+                Bin_Avgpool2d(96,kernel_size=3, stride=2, padding=1),
                 #nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
 
                 Bin_Conv2d( 96, 192, kernel_size=5, stride=1, padding=2, dropout=0.5),
