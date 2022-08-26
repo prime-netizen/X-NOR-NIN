@@ -36,9 +36,9 @@ class BinActive(torch.autograd.Function):
                 np.savetxt(file,j)
         file.close()
         
-        
         return input, mean
 
+    
     def backward(self, grad_output, grad_output_mean):
         input, = self.saved_tensors
         grad_input = grad_output.clone()
