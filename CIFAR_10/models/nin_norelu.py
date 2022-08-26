@@ -1,4 +1,5 @@
 #Architecture NIN. Modifications: Relu,bias units removed from bin conv layers
+# Changes in BinActiv Function and Saving Batch Normalization Outputs
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
@@ -12,8 +13,16 @@ class BinActive(torch.autograd.Function):
         self.save_for_backward(input)
         size = input.size()
         mean = torch.mean(input.abs(), 1, keepdim=True)
-        input = input.sign()
-        
+        #input = input.sign()
+        if input < -2:
+            input = -1
+        elif -2 < input < 0:
+            input = 1
+        elif 0 <= input < 2:
+            input = -1
+        else:
+            input = 1
+                
         """
         Saving the binarized weights
         """
@@ -129,7 +138,7 @@ class Bin_Conv2d(nn.Module):
     
     def forward(self, x):
         x_value = x.clone()
-        x = self.bn(x)
+        bnx = self.bn(x)
         ## Compact Batch Normalization
        # x_bn=torch.zeros_like(x)
        # if torch.cuda.is_available():
@@ -138,7 +147,7 @@ class Bin_Conv2d(nn.Module):
          #   x_bn[:,i,:,:]=self.bn_params[i]
         #x=x-x_bn
         
-        x, mean = BinActive.apply(x)
+        x, mean = BinActive.apply(bnx)
         if self.dropout_ratio!=0:
             x = self.dropout(x)
         x = self.conv(x)
@@ -156,7 +165,7 @@ class Bin_Conv2d(nn.Module):
                        
         #x = BinOp.binarization(x)
         if self.save_info:
-            save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x )
+            save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data,bnx, x )
         #x = self.relu(x)
         return x
     
@@ -198,13 +207,23 @@ class Net_BN(nn.Module):
         return x
 
     
-def save_variable(x,bn_weights,bn_bias,conv_weights,conv_bias,output):
+def save_variable(x,bnx,bn_weights,bn_bias,conv_weights,conv_bias,output):
     """
     Inputs
     """
     inputs = x.detach().cpu().numpy()
     file = open('inputs.txt','a')    
     for i in inputs:
+        for j in i:           
+            np.savetxt(file,j) 
+    file.close()
+    
+    """
+    Batch Normalization Outputs
+    """
+    bnop = bnx.detach().cpu().numpy()
+    file = open('bn_outputs.txt','a')    
+    for i in bnop:
         for j in i:           
             np.savetxt(file,j) 
     file.close()
