@@ -14,14 +14,15 @@ class BinActive(torch.autograd.Function):
         size = input.size()
         mean = torch.mean(input.abs(), 1, keepdim=True)
         #input = input.sign()
-        if input < -2:
-            input = -1
-        elif -2 < input < 0:
-            input = 1
-        elif 0 <= input < 2:
-            input = -1
-        else:
-            input = 1
+        for i in input:
+          for j in i:
+            ip=j.detach().cpu().numpy()
+            if ((-2 < ip) & (ip < 0)).all():
+              j = 1
+            elif ((0 <= ip) & (ip < 2)).all():
+              j = -1
+            else:
+              j = j.sign
                 
         """
         Saving the binarized weights
