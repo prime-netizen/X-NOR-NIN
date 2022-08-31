@@ -171,7 +171,8 @@ class Net_BN(nn.Module):
             
                 Bin_Conv2d(192, 160, kernel_size=1, stride=1, padding=0),
                 Bin_Conv2d(160,  96, kernel_size=1, stride=1, padding=0),
-                nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+                Bin_Conv2d(96,  96, kernel_size=3, stride=2, padding=0),
+                #nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
 
                 Bin_Conv2d( 96, 192, kernel_size=5, stride=1, padding=2, dropout=0.5),
                 Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
