@@ -80,12 +80,12 @@ class Net(nn.Module):
             
                 BinConv2d(192, 160, kernel_size=1, stride=1, padding=0),
                 BinConv2d(160,  96, kernel_size=1, stride=1, padding=0),
-                nn.MaxPool2d(kernel_size=3, stride=2, padding=1, padding_mode='zeros'),
+                nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
 
                 BinConv2d( 96, 192, kernel_size=5, stride=1, padding=2, padding_mode='zeros', dropout=0.5),
                 BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
                 BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
-                nn.AvgPool2d(kernel_size=3, stride=2, padding=1, padding_mode='zeros'),
+                nn.AvgPool2d(kernel_size=3, stride=2, padding=1),
 
                 BinConv2d(192, 192, kernel_size=3, stride=1, padding=1, padding_mode='zeros', dropout=0.5),
                 BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
@@ -173,12 +173,12 @@ class Net_BN(nn.Module):
             
                 Bin_Conv2d(192, 160, kernel_size=1, stride=1, padding=0),
                 Bin_Conv2d(160,  96, kernel_size=1, stride=1, padding=0),
-                nn.MaxPool2d(kernel_size=3, stride=2, padding=1, padding_mode='zeros'),
+                nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
 
                 Bin_Conv2d( 96, 192, kernel_size=5, stride=1, padding=2, padding_mode='zeros', dropout=0.5),
                 Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
                 Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
-                nn.AvgPool2d(kernel_size=3, stride=2, padding=1, padding_mode='zeros'),
+                nn.AvgPool2d(kernel_size=3, stride=2, padding=1),
 
                 Bin_Conv2d(192, 192, kernel_size=3, stride=1, padding=1, padding_mode='zeros', dropout=0.5),
                 Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
