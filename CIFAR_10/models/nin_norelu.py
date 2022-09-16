@@ -39,12 +39,13 @@ class BinActive(torch.autograd.Function):
 
 class BinConv2d(nn.Module):
     def __init__(self, input_channels, output_channels,
-            kernel_size=-1, stride=-1, padding=-1, dropout=0, save_info=0):
+            kernel_size=-1, stride=-1, padding=-1, dropout=0, padding_mode='zeros', save_info=0):
         super(BinConv2d, self).__init__()
         self.layer_type = 'BinConv2d'
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
+        self.padding_mode = padding_mode
         self.dropout_ratio = dropout
         self.save_info= save_info
 
@@ -53,7 +54,7 @@ class BinConv2d(nn.Module):
         if dropout!=0:
             self.dropout = nn.Dropout(dropout)
         self.conv = nn.Conv2d(input_channels, output_channels,
-                kernel_size=kernel_size, stride=stride, padding=padding)
+                kernel_size=kernel_size, stride=stride, padding=padding, padding_mode=padding_mode)
         #self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
@@ -73,20 +74,20 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.xnor = nn.Sequential(
-                nn.Conv2d(3, 192, kernel_size=5, stride=1, padding=2),
+                nn.Conv2d(3, 192, kernel_size=5, stride=1, padding=2, padding_mode='zeros'),
                 nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
                 nn.ReLU(inplace=True),
             
                 BinConv2d(192, 160, kernel_size=1, stride=1, padding=0),
                 BinConv2d(160,  96, kernel_size=1, stride=1, padding=0),
-                nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+                nn.MaxPool2d(kernel_size=3, stride=2, padding=1, padding_mode='zeros'),
 
-                BinConv2d( 96, 192, kernel_size=5, stride=1, padding=2, dropout=0.5),
+                BinConv2d( 96, 192, kernel_size=5, stride=1, padding=2, padding_mode='zeros', dropout=0.5),
                 BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
                 BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
-                nn.AvgPool2d(kernel_size=3, stride=2, padding=1),
+                nn.AvgPool2d(kernel_size=3, stride=2, padding=1, padding_mode='zeros'),
 
-                BinConv2d(192, 192, kernel_size=3, stride=1, padding=1, dropout=0.5),
+                BinConv2d(192, 192, kernel_size=3, stride=1, padding=1, padding_mode='zeros', dropout=0.5),
                 BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
             
                 nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
@@ -107,14 +108,15 @@ class Net(nn.Module):
     
 class Bin_Conv2d(nn.Module):
     def __init__(self, input_channels, output_channels,
-            kernel_size=-1, stride=-1, padding=-1, dropout=0, save_info=0):
+            kernel_size=-1, stride=-1, padding=-1, padding_mode='zeros', dropout=0, save_info=0):
         super(Bin_Conv2d, self).__init__()
         self.layer_type = 'Bin_Conv2d'
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
+        self.padding_mode = padding_mode
         self.dropout_ratio = dropout
-        self.save_info= save_info
+        self.save_info = save_info
         
         self.bn_params = torch.zeros(input_channels)
         self.dist_margin = torch.zeros(output_channels)
@@ -124,7 +126,7 @@ class Bin_Conv2d(nn.Module):
         if dropout!=0:
             self.dropout = nn.Dropout(dropout)
         self.conv = nn.Conv2d(input_channels, output_channels,
-                kernel_size=kernel_size, stride=stride, padding=padding)
+                kernel_size=kernel_size, stride=stride, padding=padding, padding_mode=padding_mode)
         #self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
@@ -165,20 +167,20 @@ class Net_BN(nn.Module):
     def __init__(self):
         super(Net_BN, self).__init__()
         self.xnor = nn.Sequential(
-                nn.Conv2d(3, 192, kernel_size=5, stride=1, padding=2),
+                nn.Conv2d(3, 192, kernel_size=5, stride=1, padding=2, padding_mode='zeros'),
                 nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
                 nn.ReLU(inplace=True),
             
                 Bin_Conv2d(192, 160, kernel_size=1, stride=1, padding=0),
                 Bin_Conv2d(160,  96, kernel_size=1, stride=1, padding=0),
-                nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+                nn.MaxPool2d(kernel_size=3, stride=2, padding=1, padding_mode='zeros'),
 
-                Bin_Conv2d( 96, 192, kernel_size=5, stride=1, padding=2, dropout=0.5),
+                Bin_Conv2d( 96, 192, kernel_size=5, stride=1, padding=2, padding_mode='zeros', dropout=0.5),
                 Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
                 Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
-                nn.AvgPool2d(kernel_size=3, stride=2, padding=1),
+                nn.AvgPool2d(kernel_size=3, stride=2, padding=1, padding_mode='zeros'),
 
-                Bin_Conv2d(192, 192, kernel_size=3, stride=1, padding=1, dropout=0.5),
+                Bin_Conv2d(192, 192, kernel_size=3, stride=1, padding=1, padding_mode='zeros', dropout=0.5),
                 Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
            
                 nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
