@@ -38,8 +38,8 @@ class BinActive(torch.autograd.Function):
         grad_input[input.le(-1)] = 0
         return grad_input
 
-
-    class BinConv2d(nn.Module):
+    
+class BinConv2d(nn.Module):
     def __init__(self, input_channels, output_channels,
             kernel_size=-1, stride=-1, padding=-1, dropout=0, save_info=0):
         super(BinConv2d, self).__init__()
