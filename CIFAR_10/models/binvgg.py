@@ -138,7 +138,7 @@ class Bin_VGG_train(nn.Module):
                 layers['pool'+str(cnt)] = nn.MaxPool2d(kernel_size=2, stride=2)
                 cnt += 1
             else:
-                layers['conv'+str(cnt)] = BinConv2d(input_channels=in_channels, output_channels=x, kernel_size=3, padding=1)
+                layers['conv'+str(cnt)] = BinConv2d(input_channels=in_channels, output_channels=x, kernel_size=3, stride=1, padding=1)
                 cnt += 1
                 layers['bn'+str(cnt)] = nn.BatchNorm2d(x)
                 cnt += 1
@@ -174,7 +174,7 @@ class Bin_VGG_test(nn.Module):
                 layers['pool'+str(cnt)] = nn.MaxPool2d(kernel_size=2, stride=2)
                 cnt += 1
             else:
-                layers['conv'+str(cnt)] = BinConv2d(in_channels=in_channels, out_channels=x, kernel_size=3, padding=1)
+                layers['conv'+str(cnt)] = BinConv2d(input_channels=in_channels, output_channels=x, kernel_size=3, stride=1, padding=1)
                 cnt += 1
                 layers['bn'+str(cnt)] = nn.BatchNorm2d(x)
                 cnt += 1
