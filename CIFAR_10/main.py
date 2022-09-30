@@ -21,7 +21,7 @@ from torchsummary import summary
 from models import nin,nin_norelu
 from torch.autograd import Variable
 
-def save_state(model, best_acc):
+def save_state(model, best_acc, mname=""):
     print('==> Saving model ...')
     state = {
             'best_acc': best_acc,
@@ -31,7 +31,7 @@ def save_state(model, best_acc):
         if 'module' in key:
             state['state_dict'][key.replace('module.', '')] = \
                     state['state_dict'].pop(key)
-    torch.save(state, 'models/' + args.arch +'.pth.tar')
+    torch.save(state, 'models/' + args.arch + mname +'.pth.tar')
 
 def train(epoch):
     model.train()
@@ -86,7 +86,7 @@ def test():
 
     if acc > best_acc:
         best_acc = acc
-        save_state(model, best_acc)
+        save_state(model, best_acc,mname)
     
     test_loss /= len(testloader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)'.format(
@@ -169,6 +169,9 @@ if __name__=='__main__':
     classes = ('plane', 'car', 'bird', 'cat',
             'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
+    
+    
+    
     # define the model
     print('==> building model',args.arch,'...')
     if args.arch == 'nin':
@@ -178,8 +181,8 @@ if __name__=='__main__':
         model = nin_norelu.Net_BN()
         model_old = nin_norelu.Net()
     elif args.arch == 'bin_vgg':
-        model = binvgg.Bin_VGG_train()
-        model_old = binvgg.Bin_VGG_train()
+        model = binvgg.Bin_VGG_train(args.arch)
+        model_old = binvgg.Bin_VGG_train(args.arch)
     else:
         raise Exception(args.arch+' is currently not supported')
 
