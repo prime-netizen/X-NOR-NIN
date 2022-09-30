@@ -1,3 +1,4 @@
+# Integrated VGG model in main code
 # For training. Features: no relu,no scaling, no bias 
 from __future__ import absolute_import
 from __future__ import division
