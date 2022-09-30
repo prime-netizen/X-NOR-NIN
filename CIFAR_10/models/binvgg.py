@@ -1,6 +1,7 @@
 #Architecture NIN. Modifications: Relu,bias units removed from bin conv layers
 import torch.nn as nn
 import torch
+import math
 import torch.nn.functional as F
 from collections import OrderedDict
 import numpy as np
@@ -137,7 +138,7 @@ class Bin_VGG_train(nn.Module):
                 layers['pool'+str(cnt)] = nn.MaxPool2d(kernel_size=2, stride=2)
                 cnt += 1
             else:
-                layers['conv'+str(cnt)] = BinConv2d(in_channels=in_channels, out_channels=x, kernel_size=3, padding=1)
+                layers['conv'+str(cnt)] = BinConv2d(input_channels=in_channels, output_channels=x, kernel_size=3, padding=1)
                 cnt += 1
                 layers['bn'+str(cnt)] = nn.BatchNorm2d(x)
                 cnt += 1
