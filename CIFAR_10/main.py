@@ -21,7 +21,7 @@ from torchsummary import summary
 from models import nin,nin_norelu
 from torch.autograd import Variable
 
-def save_state(model, best_acc, mname=""):
+def save_state(model, best_acc):
     print('==> Saving model ...')
     state = {
             'best_acc': best_acc,
@@ -86,7 +86,7 @@ def test():
 
     if acc > best_acc:
         best_acc = acc
-        save_state(model, best_acc,mname)
+        save_state(model, best_acc)
     
     test_loss /= len(testloader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)'.format(
