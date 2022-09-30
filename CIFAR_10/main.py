@@ -31,7 +31,7 @@ def save_state(model, best_acc):
         if 'module' in key:
             state['state_dict'][key.replace('module.', '')] = \
                     state['state_dict'].pop(key)
-    torch.save(state, 'models/' + args.arch + mname +'.pth.tar')
+    torch.save(state, 'models/' + args.arch +'.pth.tar')
 
 def train(epoch):
     model.train()
