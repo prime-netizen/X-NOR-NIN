@@ -180,7 +180,7 @@ if __name__=='__main__':
     elif args.arch == 'nin_norelu':
         model = nin_norelu.Net_BN()
         model_old = nin_norelu.Net()
-    elif 'vgg' in args.arch:
+    elif 'VGG' in args.arch:
         model = binvgg.Bin_VGG_train(args.arch)
         model_old = binvgg.Bin_VGG_train(args.arch)
     else:
