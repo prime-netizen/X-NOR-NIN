@@ -18,7 +18,7 @@ from torchvision import transforms
 import math
 from torchsummary import summary
 
-from models import nin,nin_norelu
+from models import nin,nin_norelu,binvgg
 from torch.autograd import Variable
 
 def save_state(model, best_acc):
@@ -180,7 +180,7 @@ if __name__=='__main__':
     elif args.arch == 'nin_norelu':
         model = nin_norelu.Net_BN()
         model_old = nin_norelu.Net()
-    elif args.arch == 'bin_vgg':
+    elif 'vgg' in args.arch:
         model = binvgg.Bin_VGG_train(args.arch)
         model_old = binvgg.Bin_VGG_train(args.arch)
     else:
