@@ -17,7 +17,7 @@ from torchvision import transforms
 import math
 from torchsummary import summary
 
-from models import nin,nin_norelu
+from models import binvgg_11
 from torch.autograd import Variable
 
 def save_state(model, best_acc):
@@ -30,7 +30,7 @@ def save_state(model, best_acc):
         if 'module' in key:
             state['state_dict'][key.replace('module.', '')] = \
                     state['state_dict'].pop(key)
-    torch.save(state, 'models/nin_norelu.pth.tar')
+    torch.save(state, 'models/bin_vgg_11.pth.tar')
 
 def train(epoch):
     model.train()
@@ -170,12 +170,9 @@ if __name__=='__main__':
 
     # define the model
     print('==> building model',args.arch,'...')
-    if args.arch == 'nin':
-        model = nin.NIN_train()
-        model_old = nin.NIN_train()
-    elif args.arch =='nin_norelu':
-        model = nin_norelu.Net_BN()
-        model_old = nin_norelu.Net() 
+    if args.arch == 'vgg11':
+        model = binvgg_11.Net_BN()
+        model_old = nin.Net() 
     else:
         raise Exception(args.arch+' is currently not supported')
 
