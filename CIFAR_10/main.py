@@ -172,7 +172,7 @@ if __name__=='__main__':
     print('==> building model',args.arch,'...')
     if args.arch == 'vgg11':
         model = binvgg_11.Net_BN()
-        model_old = nin.Net() 
+        model_old = binvgg_11.Net() 
     else:
         raise Exception(args.arch+' is currently not supported')
 
@@ -219,13 +219,13 @@ if __name__=='__main__':
     # Genration of alphas of Batch Normalization
     bn_old_list=[]
     for name,m in model_old.named_modules():
-      if isinstance(m,nin_norelu.BinConv2d):
+      if isinstance(m,binvgg_11.BinConv2d):
         bn_params=m.bn.running_mean-(((m.bn.running_var**0.5)*m.bn.bias)/m.bn.weight)
         bn_old_list.append(bn_params)
 
     i=0
     for name,m in model.named_modules():
-      if isinstance(m,nin_norelu.Bin_Conv2d):
+      if isinstance(m,binvgg_11.Bin_Conv2d):
         m.bn_params=bn_old_list[i]
         print('-' *30)
         print('Alpha starts at Bin_conv layer {}'.format(i+1))
