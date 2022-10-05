@@ -1,4 +1,4 @@
-#Architecture NIN. Modifications: Relu,bias units removed from bin conv layers
+#Architecture BinVGG11. Modifications: Relu,bias units removed from bin conv layers
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
