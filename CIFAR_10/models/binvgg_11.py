@@ -73,28 +73,32 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.xnor = nn.Sequential(
-                nn.Conv2d(3, 192, kernel_size=5, stride=1, padding=2),
-                nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
+                nn.Conv2d(3, 64, kernel_size=3, padding=1),
+                nn.BatchNorm2d(64, eps=1e-4, momentum=0.1, affine=True),
                 nn.ReLU(inplace=True),
-            
-                BinConv2d(192, 160, kernel_size=1, stride=1, padding=0),
-                BinConv2d(160,  96, kernel_size=3, stride=2, padding=1),
-                #nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+                # nn.MaxPool2d(kernel_size=2, stride=2),                
+                BinConv2d(64, 128, kernel_size=3, stride=1,padding=1),
+                nn.MaxPool2d(kernel_size=2, stride=2),
 
-                BinConv2d( 96, 192, kernel_size=5, stride=1, padding=2, dropout=0.5),
-                BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
-                BinConv2d(192, 192, kernel_size=3, stride=2, padding=1),
-                #nn.AvgPool2d(kernel_size=3, stride=2, padding=1),
+                BinConv2d( 128, 128, kernel_size=3, stride=1,padding=1),
+                BinConv2d( 128, 256, kernel_size=3, stride=1,padding=1),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+                
+                BinConv2d( 256, 256, kernel_size=3, stride=1,padding=1),                
+                BinConv2d( 256, 512, kernel_size=3, stride=1,padding=1),
+                nn.MaxPool2d(kernel_size=2, stride=2),
 
-                BinConv2d(192, 192, kernel_size=3, stride=1, padding=1, dropout=0.5),
-                BinConv2d(192, 192, kernel_size=1, stride=1, padding=0),
-            
-                nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
-            
-                nn.Conv2d(192,  10, kernel_size=1, stride=1, padding=0),
-                nn.ReLU(inplace=True),
-                nn.AvgPool2d(kernel_size=8, stride=1, padding=0),
+                BinConv2d( 512, 512, kernel_size=3, stride=1,padding=1),
+                BinConv2d( 512, 512, kernel_size=3, stride=1,padding=1),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+                
+                BinConv2d( 512, 512, kernel_size=3, stride=1,padding=1),
+                BinConv2d( 512, 512, kernel_size=3, stride=1,padding=1),
+                nn.ReLU(inplace=True),  
+                nn.MaxPool2d(kernel_size=2, stride=2),
+ 
                 )
+        self.classifier = nn.Linear (512,10)
 
     def forward(self, x):
         for m in self.modules():
@@ -102,7 +106,8 @@ class Net(nn.Module):
                 if hasattr(m.weight, 'data'):
                     m.weight.data.clamp_(min=0.01)
         x = self.xnor(x)
-        x = x.view(x.size(0), 10)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
         return x
     
 class Bin_Conv2d(nn.Module):
@@ -165,30 +170,34 @@ class Net_BN(nn.Module):
     def __init__(self):
         super(Net_BN, self).__init__()
         self.xnor = nn.Sequential(
-                nn.Conv2d(3, 192, kernel_size=5, stride=1, padding=2),
-                nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
+                nn.Conv2d(3, 64, kernel_size=3, padding=1),
+                nn.BatchNorm2d(64, eps=1e-4, momentum=0.1, affine=True),
                 nn.ReLU(inplace=True),
-            
-                Bin_Conv2d(192, 160, kernel_size=1, stride=1, padding=0),
-                #Bin_Conv2d(160,  96, kernel_size=1, stride=1, padding=0),
-                Bin_Conv2d(160,  96, kernel_size=3, stride=2, padding=1),
-                #nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+                # nn.MaxPool2d(kernel_size=2, stride=2),                
+                BinConv2d(64, 128, kernel_size=3, stride=1,padding=1),
+                nn.MaxPool2d(kernel_size=2, stride=2),
 
-                Bin_Conv2d( 96, 192, kernel_size=5, stride=1, padding=2, dropout=0.5),
-                Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
-                #Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
-                Bin_Conv2d(192, 192, kernel_size=3, stride=2, padding=1),
-                #nn.AvgPool2d(kernel_size=3, stride=2, padding=1),
+                Bin_Conv2d( 128, 128, kernel_size=3, stride=1,padding=1),
+                Bin_Conv2d( 128, 256, kernel_size=3, stride=1,padding=1),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+                
+                Bin_Conv2d( 256, 256, kernel_size=3, stride=1,padding=1),                
+                Bin_Conv2d( 256, 512, kernel_size=3, stride=1,padding=1),
+                nn.MaxPool2d(kernel_size=2, stride=2),
 
-                Bin_Conv2d(192, 192, kernel_size=3, stride=1, padding=1, dropout=0.5),
-                Bin_Conv2d(192, 192, kernel_size=1, stride=1, padding=0),
-           
-                nn.BatchNorm2d(192, eps=1e-4, momentum=0.1, affine=False),
+                Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
+                Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+                
+                Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
+                Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
+                nn.ReLU(inplace=True),  
+                nn.MaxPool2d(kernel_size=2, stride=2),
             
-                nn.Conv2d(192,  10, kernel_size=1, stride=1, padding=0),
-                nn.ReLU(inplace=True),
-                nn.AvgPool2d(kernel_size=8, stride=1, padding=0),
+                nn.AvgPool2d(kernel_size=1, stride=1),
+ 
                 )
+        self.classifier = nn.Linear (512,10)
 
     def forward(self, x):
         for m in self.modules():
@@ -196,7 +205,8 @@ class Net_BN(nn.Module):
                 if hasattr(m.weight, 'data'):
                     m.weight.data.clamp_(min=0.01)
         x = self.xnor(x)
-        x = x.view(x.size(0), 10)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
         return x
 
     
