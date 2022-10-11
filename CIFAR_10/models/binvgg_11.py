@@ -54,7 +54,7 @@ class BinConv2d(nn.Module):
             self.dropout = nn.Dropout(dropout)
         self.conv = nn.Conv2d(input_channels, output_channels,
                 kernel_size=kernel_size, stride=stride, padding=padding)
-        #self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
         x_value = x.clone()
@@ -66,7 +66,7 @@ class BinConv2d(nn.Module):
         #x = BinOp.binarization(x)
         if self.save_info:
             save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x )
-        #x = self.relu(x)
+        x = self.relu(x)
         return x
 
 class Net(nn.Module):
@@ -76,29 +76,35 @@ class Net(nn.Module):
                 nn.Conv2d(3, 64, kernel_size=3, padding=1),
                 nn.BatchNorm2d(64, eps=1e-4, momentum=0.1, affine=True),
                 nn.ReLU(inplace=True),
-                # nn.MaxPool2d(kernel_size=2, stride=2),                
+                nn.MaxPool2d(kernel_size=2, stride=2),                
                 BinConv2d(64, 128, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
 
-                BinConv2d( 128, 128, kernel_size=3, stride=1,padding=1),
                 BinConv2d( 128, 256, kernel_size=3, stride=1,padding=1),
+                BinConv2d( 256, 256, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
                 
-                BinConv2d( 256, 256, kernel_size=3, stride=1,padding=1),                
-                BinConv2d( 256, 512, kernel_size=3, stride=1,padding=1),
+                BinConv2d( 256, 512, kernel_size=3, stride=1,padding=1),                
+                BinConv2d( 512, 512, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
 
                 BinConv2d( 512, 512, kernel_size=3, stride=1,padding=1),
                 BinConv2d( 512, 512, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
                 
-                BinConv2d( 512, 512, kernel_size=3, stride=1,padding=1),
-                BinConv2d( 512, 512, kernel_size=3, stride=1,padding=1),
-                nn.ReLU(inplace=True),  
-                nn.MaxPool2d(kernel_size=2, stride=2),
  
                 )
-        self.classifier = nn.Linear (512,10)
+        self.classifier = nn.Sequential(
+                nn.Dropout(),
+                nn.Linear (512,512),
+                nn.ReLU(True),
+                nn.Dropout(),
+                nn.Linear(512, 512),
+                nn.ReLU(True),
+                nn.Linear(512, 10),
+            )
+                
+            
 
     def forward(self, x):
         for m in self.modules():
@@ -130,7 +136,7 @@ class Bin_Conv2d(nn.Module):
             self.dropout = nn.Dropout(dropout)
         self.conv = nn.Conv2d(input_channels, output_channels,
                 kernel_size=kernel_size, stride=stride, padding=padding)
-        #self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
         x_value = x.clone()
@@ -162,7 +168,7 @@ class Bin_Conv2d(nn.Module):
         #x = BinOp.binarization(x)
         if self.save_info:
             save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x )
-        #x = self.relu(x)
+        x = self.relu(x)
         return x
     
     
@@ -173,31 +179,33 @@ class Net_BN(nn.Module):
                 nn.Conv2d(3, 64, kernel_size=3, padding=1),
                 nn.BatchNorm2d(64, eps=1e-4, momentum=0.1, affine=True),
                 nn.ReLU(inplace=True),
-                # nn.MaxPool2d(kernel_size=2, stride=2),                
+                nn.MaxPool2d(kernel_size=2, stride=2),                
                 BinConv2d(64, 128, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
 
-                Bin_Conv2d( 128, 128, kernel_size=3, stride=1,padding=1),
                 Bin_Conv2d( 128, 256, kernel_size=3, stride=1,padding=1),
+                Bin_Conv2d( 256, 256, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
                 
-                Bin_Conv2d( 256, 256, kernel_size=3, stride=1,padding=1),                
-                Bin_Conv2d( 256, 512, kernel_size=3, stride=1,padding=1),
+                Bin_Conv2d( 256, 512, kernel_size=3, stride=1,padding=1),                
+                Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
 
                 Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
                 Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
                 
-                Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
-                Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
-                nn.ReLU(inplace=True),  
-                nn.MaxPool2d(kernel_size=2, stride=2),
-            
-                nn.AvgPool2d(kernel_size=1, stride=1),
  
                 )
-        self.classifier = nn.Linear (512,10)
+        self.classifier = nn.Sequential(
+                nn.Dropout(),
+                nn.Linear (512,512),
+                nn.ReLU(True),
+                nn.Dropout(),
+                nn.Linear(512, 512),
+                nn.ReLU(True),
+                nn.Linear(512, 10),
+                )
 
     def forward(self, x):
         for m in self.modules():
