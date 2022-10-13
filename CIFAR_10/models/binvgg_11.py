@@ -66,7 +66,7 @@ class BinConv2d(nn.Module):
         #x = BinOp.binarization(x)
         if self.save_info:
             save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x )
-        x = self.relu(x)
+        #x = self.relu(x)
         return x
 
 class Net(nn.Module):
@@ -183,7 +183,8 @@ class Net_BN(nn.Module):
                 nn.Conv2d(3, 64, kernel_size=3, padding=1),
                 nn.BatchNorm2d(64, eps=1e-4, momentum=0.1, affine=True),
                 nn.ReLU(inplace=True),
-                nn.MaxPool2d(kernel_size=2, stride=2),                
+                nn.MaxPool2d(kernel_size=2, stride=2),
+            
                 BinConv2d(64, 128, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
 
@@ -195,10 +196,6 @@ class Net_BN(nn.Module):
                 Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
 
-                Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
-                Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
-                nn.MaxPool2d(kernel_size=2, stride=2),
-            
                 Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
                 Bin_Conv2d( 512, 512, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
