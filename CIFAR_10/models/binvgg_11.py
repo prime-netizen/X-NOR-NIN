@@ -77,7 +77,7 @@ class Net(nn.Module):
                 nn.BatchNorm2d(64, eps=1e-4, momentum=0.1, affine=True),
                 nn.ReLU(inplace=True),
                 #nn.MaxPool2d(kernel_size=2, stride=2),                
-                BinConv2d(64, 128, kernel_size=3, stride=1,padding=1),
+                Bin_Conv2d(64, 128, kernel_size=3, stride=1,padding=1),
                 nn.MaxPool2d(kernel_size=2, stride=2),
 
                 BinConv2d( 128, 128, kernel_size=3, stride=1,padding=1),
