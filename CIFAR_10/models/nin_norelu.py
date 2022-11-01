@@ -39,10 +39,11 @@ class BinActive(torch.autograd.Function):
         return grad_input
 
 class BinConv2d(nn.Module):
-    def __init__(self, input_channels, output_channels,
+    def __init__(self, input_channels, output_channels, sigma,
             kernel_size=-1, stride=-1, padding=-1, dropout=0, padding_mode='zeros', save_info=0):
         super(BinConv2d, self).__init__()
         self.layer_type = 'BinConv2d'
+        self.sigma = sigma
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
@@ -65,6 +66,15 @@ class BinConv2d(nn.Module):
         if self.dropout_ratio!=0:
             x = self.dropout(x)
         x = self.conv(x)
+        
+        #Adding Gaussian Noise
+        if sigma!=0:
+            torch.manual_seed(0)
+            a=sigma*torch.randn_like(x)
+            if torch.cuda.is_available():
+                a=a.cuda()
+            x=x+a
+        
         #x = BinOp.binarization(x)
         if self.save_info:
             save_variable(x_value,self.bn.weight.data,self.bn.bias.data,self.conv.weight.data,self.conv.bias.data, x )
@@ -108,16 +118,18 @@ class Net(nn.Module):
         return x
     
 class Bin_Conv2d(nn.Module):
-    def __init__(self, input_channels, output_channels,
+    def __init__(self, input_channels, output_channels, sigma,
             kernel_size=-1, stride=-1, padding=-1, padding_mode='zeros', dropout=0, save_info=0):
         super(Bin_Conv2d, self).__init__()
         self.layer_type = 'Bin_Conv2d'
+        self.sigma = sigma
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
         self.padding_mode = padding_mode
         self.dropout_ratio = dropout
         self.save_info = save_info
+        
         
         self.bn_params = torch.zeros(input_channels)
         self.dist_margin = torch.zeros(output_channels)
@@ -127,7 +139,7 @@ class Bin_Conv2d(nn.Module):
         if dropout!=0:
             self.dropout = nn.Dropout(dropout)
         self.conv = nn.Conv2d(input_channels, output_channels,
-                kernel_size=kernel_size, stride=stride, padding=padding, padding_mode=padding_mode)
+                kernel_size=kernel_size, stride=stride, padding=padding, padding_mode=padding_mode)            
         #self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
@@ -145,6 +157,13 @@ class Bin_Conv2d(nn.Module):
         if self.dropout_ratio!=0:
             x = self.dropout(x)
         x = self.conv(x)
+        
+        if sigma!=0:
+            torch.manual_seed(0)
+            a=sigma*torch.randn_like(x)
+            if torch.cuda.is_available():
+                a=a.cuda()
+            x=x+a
         
         ## Add variations
         #var_x=torch.ones_like(x)
