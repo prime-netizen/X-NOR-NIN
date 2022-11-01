@@ -68,9 +68,9 @@ class BinConv2d(nn.Module):
         x = self.conv(x)
         
         #Adding Gaussian Noise
-        if sigma!=0:
+        if self.sigma!=0:
             torch.manual_seed(0)
-            a=sigma*torch.randn_like(x)
+            a=self.sigma*torch.randn_like(x)
             if torch.cuda.is_available():
                 a=a.cuda()
             x=x+a
@@ -158,9 +158,9 @@ class Bin_Conv2d(nn.Module):
             x = self.dropout(x)
         x = self.conv(x)
         
-        if sigma!=0:
+        if self.sigma!=0:
             torch.manual_seed(0)
-            a=sigma*torch.randn_like(x)
+            a=self.sigma*torch.randn_like(x)
             if torch.cuda.is_available():
                 a=a.cuda()
             x=x+a
